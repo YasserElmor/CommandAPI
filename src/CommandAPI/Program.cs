@@ -1,7 +1,6 @@
 using CommandAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // this enables us to access the values stored in appsettings.json in our code using the IConfiguration interface and accessing _configuration[KeyName]
@@ -18,6 +17,7 @@ builder.Services.AddDbContext<CommandContext>(options =>
     options.UseNpgsql(connectionStringBuilder.ConnectionString));
 
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICommandAPIRepo, CommandAPIRepo>();
 
 var app = builder.Build();
