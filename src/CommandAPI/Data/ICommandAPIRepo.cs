@@ -4,12 +4,12 @@ namespace CommandAPI.Data
 {
     public interface ICommandAPIRepo
     {
-        bool SaveChanges();
-        IEnumerable<Command> GetAllCommands();
-        Command GetCommandById(int id);
+        Task<bool> SaveChangesAsync();
+        Task<IEnumerable<Command>> GetAllCommandsAsync();
+        Task<Command> GetCommandByIdAsync(int id);
 
-        void CreateCommand(Command cmd);
-        void UpdateCommand(Command cmd);
-        void DeleteCommand(Command cmd);
+        Task CreateCommandAsync(Command cmd);
+        Task UpdateCommandAsync(Command cmd);
+        Task DeleteCommandAsync(Command cmd);
     }
 }

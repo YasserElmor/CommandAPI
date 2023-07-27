@@ -1,6 +1,7 @@
 using AutoMapper;
 using CommandAPI.Data;
 using CommandAPI.Dtos;
+using CommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommandAPI.Controllers
@@ -19,24 +20,37 @@ namespace CommandAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CommandReadDto>> GetAllCommands()
+        public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetAllCommandsAsync()
         {
-            var commands = _commandAPIRepo.GetAllCommands();
+            var commands = await _commandAPIRepo.GetAllCommandsAsync();
 
             if (commands is null)
                 return NotFound();
 
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commands));
         }
-        [HttpGet("{id}")]
-        public ActionResult<CommandReadDto> GetCommandById(int id)
+        [HttpGet("{id}", Name = "GetCommandByIdAsync")]
+        public async Task<ActionResult<CommandReadDto>> GetCommandByIdAsync(int id)
         {
-            var command = _commandAPIRepo.GetCommandById(id);
+            var command = await _commandAPIRepo.GetCommandByIdAsync(id);
 
             if (command is null)
                 return NotFound();
 
             return Ok(_mapper.Map<CommandReadDto>(command));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<CommandReadDto>> CreateCommandAsync(CommandCreateDto commandCreateDto)
+        {
+            var commandModel = _mapper.Map<Command>(commandCreateDto);
+
+            await _commandAPIRepo.CreateCommandAsync(commandModel);
+            await _commandAPIRepo.SaveChangesAsync();
+
+            var commandReadDto = _mapper.Map<CommandReadDto>(commandModel);
+
+            return CreatedAtRoute(nameof(GetCommandByIdAsync), new { Id = commandReadDto.Id }, commandReadDto);
         }
     }
 }

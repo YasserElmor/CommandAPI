@@ -1,4 +1,5 @@
 using CommandAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CommandAPI.Data
 {
@@ -10,32 +11,32 @@ namespace CommandAPI.Data
         {
             _context = context;
         }
-        public void CreateCommand(Command cmd)
+        public async Task CreateCommandAsync(Command cmd)
+        {
+            await _context.CommandItems.AddAsync(cmd);
+        }
+
+        public async Task DeleteCommandAsync(Command cmd)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteCommand(Command cmd)
+        public async Task<IEnumerable<Command>> GetAllCommandsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.CommandItems.ToListAsync();
         }
 
-        public IEnumerable<Command> GetAllCommands()
+        public async Task<Command> GetCommandByIdAsync(int id)
         {
-            return _context.CommandItems.ToList();
+            return await _context.CommandItems.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public Command GetCommandById(int id)
+        public async Task<bool> SaveChangesAsync()
         {
-            return _context.CommandItems.FirstOrDefault(p => p.Id == id);
+            return (await _context.SaveChangesAsync()) >= 0;
         }
 
-        public bool SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateCommand(Command cmd)
+        public async Task UpdateCommandAsync(Command cmd)
         {
             throw new NotImplementedException();
         }
